@@ -11,7 +11,7 @@ namespace GymMangementDAL.Repositories.Interfaces
     {
 
         IEnumerable<Trainer> GetAll();
-        Trainer? Get(int id);
+        Trainer? GetById(int id);
 
         int Add(Trainer trainer);
 

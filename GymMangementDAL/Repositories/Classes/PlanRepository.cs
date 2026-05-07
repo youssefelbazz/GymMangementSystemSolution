@@ -9,40 +9,39 @@ using System.Threading.Tasks;
 
 namespace GymMangementDAL.Repositories.Classes
 {
-    public class TrainerRepository : ITrainerRepository
+    public class PlanRepository : IPlanRepository
     {
 
-
         private readonly GymDbContext _dbContext;
-        public TrainerRepository(GymDbContext dbContext)
+        public PlanRepository(GymDbContext dbContext)
         {
             _dbContext = dbContext;
         }
-        public int Add(Trainer trainer)
+        public int Add(Plan plan)
         {
-            _dbContext.Trainers.Add(trainer);
+            _dbContext.Plans.Add(plan);
             return _dbContext.SaveChanges();
         }
 
-        public int Delete(Trainer trainer)
+        public int Delete(Plan plan)
         {
-            _dbContext.Trainers.Remove(trainer);
+            _dbContext.Plans.Remove(plan);
             return _dbContext.SaveChanges();
         }
 
-        public Trainer? GetById(int id)
+        public IEnumerable<Plan> GetAlL()
         {
-            return _dbContext.Trainers.Find(id);
+            return _dbContext.Plans.ToList();
         }
 
-        public IEnumerable<Trainer> GetAll()
+        public Plan? GetById(int id)
         {
-            return _dbContext.Trainers.ToList();
+            return _dbContext.Plans.Find(id);
         }
 
-        public int Update(Trainer trainer)
+        public int Update(Plan plan)
         {
-            _dbContext.Trainers.Update(trainer);
+            _dbContext.Plans.Update(plan);
             return _dbContext.SaveChanges();
         }
     }
