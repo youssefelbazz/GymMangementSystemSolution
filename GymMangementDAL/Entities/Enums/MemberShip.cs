@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymMangementDAL.Entities.Enums
 {
-    internal class MemberShip:BaseEntity
+    public class MemberShip:BaseEntity
     {
         //start date == created at 
         public DateTime EndDate { get; set; }

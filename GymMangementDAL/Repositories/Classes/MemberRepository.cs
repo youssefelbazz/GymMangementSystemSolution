@@ -11,8 +11,15 @@ namespace GymMangementDAL.Repositories.Classes
 {
     internal class MemberRepository : IMemberRepository
     {
-        private readonly GymDbContext _dbContext= new GymDbContext();
+        //private readonly GymDbContext _dbContext= new GymDbContext();//tight coupling
+        // control of lifetime of dbContext is on the repository
+        //Dependency Injection 
 
+        private readonly GymDbContext _dbContext;
+        public MemberRepository(GymDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
         public int Add(Member member)
         {
             _dbContext.Members.Add(member);

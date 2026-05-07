@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GymMangementDAL.Entities
 {
-    internal class MemberSession:BaseEntity
+    public class MemberSession:BaseEntity
     {
         //BookingDate == CreatedAt
         public bool IsAttended { get; set; }
