@@ -12,10 +12,10 @@ namespace GymMangementDAL.Repositories.Interfaces
         IEnumerable<Plan> GetAlL();
         Plan? GetById(int id);
 
-        int Add(Plan plan);
+       
 
         int Update(Plan plan);
-        int Delete(Plan plan);
+        
 
 
 
