@@ -12,5 +12,13 @@ namespace GymMangementDAL.Entities
         public int Capacity { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }=null!;
+
+        public int TrainerId { get; set; }
+        public Trainer SessionTrainer { get; set; } = null!;
+
+        public ICollection<MemberSession> SessionMembers { get; set; }
+
     }
 }

@@ -14,5 +14,6 @@ namespace GymMangementDAL.Entities
         public string? Note { get; set; }
 
 
+
     }
 }
