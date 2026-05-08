@@ -1,4 +1,6 @@
-﻿using GymMangementBLL.ViewModels.MemberViewModels;
+﻿using GymMangementBLL.ViewModels;
+using GymMangementBLL.ViewModels.MemberViewModels;
+using GymMangementDAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,12 @@ namespace GymMangementBLL.Services.Interfaces
         IEnumerable<MemberViewModel> GetAllMembers();
        
         bool CreateMember(CreateMemberViewModel createMemberViewModel);
+
+        MemberViewModel? GetMemberDetails(int memberId);
+
+        HealthRecordViewModel? GetMemberHealthRecordDetails(int memberId);
+
+ 
 
     }
 }

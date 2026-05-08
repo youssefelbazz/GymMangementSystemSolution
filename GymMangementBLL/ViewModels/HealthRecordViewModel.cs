@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GymMangementBLL.ViewModels
 {
-    internal class HealthRecordViewModel
+    public class HealthRecordViewModel
     {
         [Required(ErrorMessage = "Height is required")]
         [Range(0.1 ,300,ErrorMessage ="Height must be between 0.1 and 300 cm")]
@@ -22,5 +22,9 @@ namespace GymMangementBLL.ViewModels
         public string  BloodType { get; set; }
 
         public string?  Note { get; set; }
+
+
+
+
     }
 }
