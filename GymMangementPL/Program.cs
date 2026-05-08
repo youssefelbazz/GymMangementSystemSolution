@@ -1,4 +1,7 @@
 using GymMangementDAL.Data.Contexts;
+using GymMangementDAL.Entities;
+using GymMangementDAL.Repositories.Classes;
+using GymMangementDAL.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 namespace GymMangementPL
 {
@@ -15,7 +18,7 @@ namespace GymMangementPL
                 //options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));//short hand for the above line
             });
-
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
