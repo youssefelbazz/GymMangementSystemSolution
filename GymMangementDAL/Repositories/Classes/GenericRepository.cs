@@ -30,10 +30,17 @@ namespace GymMangementDAL.Repositories.Classes
             return _dbcontext.SaveChanges();
         }
 
-        public IEnumerable<TEntity> GetAll()
-        {
-            return _dbcontext.Set<TEntity>().AsNoTracking().ToList();
 
+        public IEnumerable<TEntity> GetAll(Func<TEntity, bool>? condition = null)
+        {
+          if (condition == null)
+            {
+                return _dbcontext.Set<TEntity>().AsNoTracking().ToList();
+            }
+            else
+            {
+                return _dbcontext.Set<TEntity>().AsNoTracking().Where(condition).ToList();
+            }
         }
 
         public TEntity? GetById(int id)

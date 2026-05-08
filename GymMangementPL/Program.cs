@@ -18,6 +18,7 @@ namespace GymMangementPL
                 //options.UseSqlServer(builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"]);
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));//short hand for the above line
             });
+            // Register the generic repository service
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             var app = builder.Build();
 
