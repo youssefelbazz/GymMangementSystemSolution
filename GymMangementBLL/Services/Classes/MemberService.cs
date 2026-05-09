@@ -14,18 +14,22 @@ namespace GymMangementBLL.Services.Classes
 {
     internal class MemberService : IMemberService
     {
+        #region readonly prop
         private readonly IGenericRepository<Member> _memberRepository;
         private readonly IGenericRepository<MemberShip> _memberShipRepository;
         private readonly IPlanRepository _planRepository;
         private readonly IGenericRepository<GymMangementDAL.Entities.HealthRecord> _healthrecordRepository;
+        private readonly IGenericRepository<MemberSession> _memberSessionRepository; 
+        #endregion
 
-        // روح ف ال main عشان تسجل ال service دي في ال container
-        public MemberService(IGenericRepository<Member> memberRepository, IGenericRepository<MemberShip> memberShipRepository, IPlanRepository planRepository, IGenericRepository<GymMangementDAL.Entities.HealthRecord> healthrecordRepository)
+   
+        public MemberService(IGenericRepository<Member> memberRepository, IGenericRepository<MemberShip> memberShipRepository, IPlanRepository planRepository, IGenericRepository<GymMangementDAL.Entities.HealthRecord> healthrecordRepository, IGenericRepository<MemberSession> memberSessionRepository)
         {
             _memberRepository = memberRepository;
             _memberShipRepository = memberShipRepository;
             _planRepository = planRepository;
             _healthrecordRepository = healthrecordRepository;
+            _memberSessionRepository = memberSessionRepository;
         }
 
         public bool CreateMember(CreateMemberViewModel createMemberViewModel)
@@ -71,6 +75,30 @@ namespace GymMangementBLL.Services.Classes
                 return false;
             }
 
+        }
+
+        public bool DeleteMember(int memberId)
+        {
+            var member = _memberRepository.GetById(memberId);
+            if (member == null) return false;
+            var hasActiveMembersession = _memberSessionRepository.GetAll(ms => ms.MemberId == memberId && ms.Session.StartDate > DateTime.Now).Any();
+            if (hasActiveMembersession)return false;
+            var memberShips = _memberShipRepository.GetAll(ms => ms.MemberId == memberId);
+            try
+            {
+                if (memberShips.Any())
+                {
+                    foreach (var memberShip in memberShips)
+                    {
+                        _memberShipRepository.Delete(memberShip);
+                    }
+                }
+                return _memberRepository.Delete(member) > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public IEnumerable<MemberViewModel> GetAllMembers()
@@ -188,7 +216,7 @@ namespace GymMangementBLL.Services.Classes
             {
 
 
-            
+
                 if (IsEmailExists(updatedMember.Email) || IsPhoneExists(updatedMember.Phone)) return false;
                 var membertoupdate = _memberRepository.GetById(memberId);
                 if (membertoupdate == null) return false;
@@ -208,7 +236,7 @@ namespace GymMangementBLL.Services.Classes
 
             }
 
-          
+
 
         }
 
@@ -216,15 +244,15 @@ namespace GymMangementBLL.Services.Classes
         private bool IsEmailExists(string email)
         {
 
-           return _memberRepository.GetAll(m => m.Email == email).Any();
+            return _memberRepository.GetAll(m => m.Email == email).Any();
 
         }
         private bool IsPhoneExists(string phone)
         {
 
-           return _memberRepository.GetAll(m => m.Phone == phone).Any();
+            return _memberRepository.GetAll(m => m.Phone == phone).Any();
 
         }
-            #endregion
+        #endregion
     }
 }
