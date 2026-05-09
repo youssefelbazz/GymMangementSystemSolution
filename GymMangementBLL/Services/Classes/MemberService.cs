@@ -20,7 +20,7 @@ namespace GymMangementBLL.Services.Classes
         private readonly IGenericRepository<GymMangementDAL.Entities.HealthRecord> _healthrecordRepository;
 
         // روح ف ال main عشان تسجل ال service دي في ال container
-        public MemberService(IGenericRepository<Member> memberRepository, IGenericRepository<MemberShip> memberShipRepository,IPlanRepository planRepository,IGenericRepository<GymMangementDAL.Entities.HealthRecord> healthrecordRepository)
+        public MemberService(IGenericRepository<Member> memberRepository, IGenericRepository<MemberShip> memberShipRepository, IPlanRepository planRepository, IGenericRepository<GymMangementDAL.Entities.HealthRecord> healthrecordRepository)
         {
             _memberRepository = memberRepository;
             _memberShipRepository = memberShipRepository;
@@ -38,9 +38,7 @@ namespace GymMangementBLL.Services.Classes
                 //if one of them exists return false
                 //if not create the member and return true and add it to the database
 
-                var emailExists = _memberRepository.GetAll(m => m.Email == createMemberViewModel.Email).Any();
-                var phoneExists = _memberRepository.GetAll(m => m.Phone == createMemberViewModel.Phone).Any();
-                if (phoneExists || emailExists) return false;
+                if (IsEmailExists(createMemberViewModel.Email) || IsPhoneExists(createMemberViewModel.Phone)) return false;
 
                 var member = new Member()
                 {
@@ -125,18 +123,18 @@ namespace GymMangementBLL.Services.Classes
 
             var memberViewModel = new MemberViewModel()
             {
-            
+
                 Name = Member.Name,
                 Email = Member.Email,
                 Phone = Member.Phone,
                 Photo = Member.Photo,
-                Gender= Member.Gender.ToString(),
+                Gender = Member.Gender.ToString(),
                 DateOfBirth = Member.DateOfBirth.ToString("yyyy-MM-dd"),
                 Address = $"{Member.Address.BuildingNumber} - {Member.Address.Street} - {Member.Address.City}",
 
 
             };
-            var activeMemberShip = _memberShipRepository.GetAll(ms => ms.MemberId == memberId&&ms.Status =="Active").FirstOrDefault();
+            var activeMemberShip = _memberShipRepository.GetAll(ms => ms.MemberId == memberId && ms.Status == "Active").FirstOrDefault();
             if (activeMemberShip is not null)
             {
                 memberViewModel.MembershipStartDate = activeMemberShip.CreatedAt.ToShortDateString();
@@ -164,5 +162,69 @@ namespace GymMangementBLL.Services.Classes
 
 
         }
+
+        public MemberToUpdateViewModel? GetMemberToUpdate(int memberId)
+        {
+            var member = _memberRepository.GetById(memberId);
+            if (member == null) return null;
+            return new MemberToUpdateViewModel()
+            {
+                Name = member.Name,
+                Email = member.Email,
+                Phone = member.Phone,
+                Photo = member.Photo,
+                BuildingNumber = member.Address.BuildingNumber,
+                Street = member.Address.Street,
+                City = member.Address.City
+            };
+
+        }
+
+        public bool UpdateMemberDetails(int memberId, MemberToUpdateViewModel updatedMember)
+        {
+
+
+            try
+            {
+
+
+            
+                if (IsEmailExists(updatedMember.Email) || IsPhoneExists(updatedMember.Phone)) return false;
+                var membertoupdate = _memberRepository.GetById(memberId);
+                if (membertoupdate == null) return false;
+                membertoupdate.Email = updatedMember.Email;
+                membertoupdate.Phone = updatedMember.Phone;
+                membertoupdate.Address.BuildingNumber = updatedMember.BuildingNumber;
+                membertoupdate.Address.Street = updatedMember.Street;
+                membertoupdate.Address.City = updatedMember.City;
+                membertoupdate.UpdatedAt = DateTime.Now;
+                return _memberRepository.Update(membertoupdate) > 0;
+
+            }
+            catch
+            {
+                return false;
+
+
+            }
+
+          
+
+        }
+
+        #region Helper Metod
+        private bool IsEmailExists(string email)
+        {
+
+           return _memberRepository.GetAll(m => m.Email == email).Any();
+
+        }
+        private bool IsPhoneExists(string phone)
+        {
+
+           return _memberRepository.GetAll(m => m.Phone == phone).Any();
+
+        }
+            #endregion
     }
 }
